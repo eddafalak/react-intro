@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+import { Link } from "react-router-dom";
 
 interface HeaderProps {
   title: string;
@@ -7,19 +8,12 @@ interface HeaderProps {
 
 function Header({ title, menuItems }: HeaderProps) {
   const [isOpen, setIsOpen] = useState(false);
-  const [hoveredItem, setHoveredItem] = useState<string | null>(null); // Track hovered item
+  const [hoveredItem, setHoveredItem] = useState<string | null>(null);
 
-  const toggleMenu = () => {
-    setIsOpen(!isOpen);
-  };
+  const toggleMenu = () => setIsOpen(!isOpen);
 
-  const handleMouseEnter = (item: string) => {
-    setHoveredItem(item); // Set hovered item when mouse enters
-  };
-
-  const handleMouseLeave = () => {
-    setHoveredItem(null); // Reset hovered item when mouse leaves
-  };
+  const handleMouseEnter = (item: string) => setHoveredItem(item);
+  const handleMouseLeave = () => setHoveredItem(null);
 
   const headerStyle: React.CSSProperties = {
     display: "flex",
@@ -31,9 +25,7 @@ function Header({ title, menuItems }: HeaderProps) {
     zIndex: 10,
   };
 
-  const titleStyle: React.CSSProperties = {
-    color: "white",
-  };
+  const titleStyle: React.CSSProperties = { color: "white" };
 
   const menuStyle: React.CSSProperties = {
     display: isOpen ? "flex" : "none",
@@ -59,9 +51,9 @@ function Header({ title, menuItems }: HeaderProps) {
   const menuItemStyle = (item: string): React.CSSProperties => ({
     padding: "15px",
     fontSize: "30px",
-    color: hoveredItem === item ? "#f39c12" : "white", // Change color on hover
+    color: hoveredItem === item ? "#f39c12" : "white",
     textDecoration: "none",
-    cursor: "pointer", // Make it look clickable
+    cursor: "pointer",
   });
 
   const hamburgerStyle: React.CSSProperties = {
@@ -87,7 +79,6 @@ function Header({ title, menuItems }: HeaderProps) {
   return (
     <header style={headerStyle}>
       <h1 style={titleStyle}>{title}</h1>
-
       <button onClick={toggleMenu} style={hamburgerStyle}>
         &#9776;
       </button>
@@ -101,12 +92,16 @@ function Header({ title, menuItems }: HeaderProps) {
           {menuItems.map((item, index) => (
             <li
               key={index}
-              onMouseEnter={() => handleMouseEnter(item)} // Hover start
-              onMouseLeave={handleMouseLeave} // Hover end
+              onMouseEnter={() => handleMouseEnter(item)}
+              onMouseLeave={handleMouseLeave}
             >
-              <a href={`#${item.toLowerCase()}`} style={menuItemStyle(item)}>
+              <Link
+                to={`/${item.toLowerCase()}`} // Use Link instead of <a> for React Router navigation
+                style={menuItemStyle(item)}
+                onClick={toggleMenu} // Close menu when a link is clicked
+              >
                 {item}
-              </a>
+              </Link>
             </li>
           ))}
         </ul>
